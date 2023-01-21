@@ -1,4 +1,5 @@
 ﻿using DesafioEncodeBDDO.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,12 +7,13 @@ using System.Security.Claims;
 
 namespace DesafioBackEnd.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DateUserController : ControllerBase
     {
-        public readonly DesafioBackEndBddoContext _dbContext;
-        public DateUserController(DesafioBackEndBddoContext dbContext)
+        public readonly ApplicationContext _dbContext;
+        public DateUserController(ApplicationContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -57,7 +59,7 @@ namespace DesafioBackEnd.Controllers
 
             }
         }
-
+        [Authorize(Policy = "Admin")]
         [HttpPut]
         [Route("Update")]
         public IActionResult Update([FromBody] DataUser usr)
@@ -92,7 +94,8 @@ namespace DesafioBackEnd.Controllers
 
             }
         }
-
+        
+        [Authorize(Policy = "Admin")]
         [HttpDelete]
         [Route("Delete/{IdUser:int}")]
         public IActionResult Delete(int IdUser)

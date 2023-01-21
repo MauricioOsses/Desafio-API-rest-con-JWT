@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using DesafioEncodeBDDO.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace DesafioEncodeBDDO.Models;
 
-public partial class DesafioBackEndBddoContext : DbContext
+public partial class ApplicationContext : DbContext
 {
-    public DesafioBackEndBddoContext()
+    public ApplicationContext()
     {
     }
 
-    public DesafioBackEndBddoContext(DbContextOptions<DesafioBackEndBddoContext> options)
+    public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
     {
     }
@@ -18,6 +19,7 @@ public partial class DesafioBackEndBddoContext : DbContext
     public virtual DbSet<DataUser> DataUser { get; set; }
 
     public virtual DbSet<User> User { get; set; }
+    public virtual DbSet<UserDto> UserDto { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -64,6 +66,7 @@ public partial class DesafioBackEndBddoContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength();
         });
+        modelBuilder.Entity<UserDto>().HasNoKey();
 
         OnModelCreatingPartial(modelBuilder);
     }
