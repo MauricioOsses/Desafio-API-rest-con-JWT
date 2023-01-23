@@ -5,15 +5,18 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using DesafioEncodeBDDO.Models;
+using DesafioEncodeBDDO.Helpers;
 using DesafioEncodeBDDO.Services;
+using AutoMapper;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckl ne
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -32,7 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 builder.Services.AddAuthorization(op =>
-    op.AddPolicy("Admin", policy => policy.RequireClaim("AdminType", "Administrador"))
+    op.AddPolicy("Admin", policy => policy.RequireClaim("Rol", "Administrador"))
 );
 
 builder.Services.AddScoped<LoginService>();
@@ -43,6 +46,20 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseExceptionHandler(builder => 
+    {builder.Run(async context => 
+    { context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        var error = context.Features.Get<IExceptionHandlerFeature>();
+        if(error != null)
+        {
+            context.Response.AddApplicationError(error.Error.Message);
+            await context.Response.WriteAsync(error.Error.Message);
+        }
+    }); 
+    });
 }
 
 app.UseHttpsRedirection();

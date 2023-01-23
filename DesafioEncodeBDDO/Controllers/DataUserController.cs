@@ -59,23 +59,13 @@ namespace DesafioBackEnd.Controllers
 
             }
         }
+        
         [Authorize(Policy = "Admin")]
         [HttpPut]
         [Route("Update")]
         public IActionResult Update([FromBody] DataUser usr)
         {
             DataUser User = _dbContext.DataUser.Find(usr.IdDataUser);
-
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            //var rToken = ValidarToken(identity);
-
-            //if (rToken.success)
-
-
-            //    if (User == null)
-            //    {
-            //        return BadRequest("Usuario no encontrado...");
-            //    }
 
             try
             {
@@ -85,7 +75,7 @@ namespace DesafioBackEnd.Controllers
 
                 _dbContext.DataUser.Update(User);
                 _dbContext.SaveChanges();
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok" });
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "Los datos fueron actualizados" });
             }
             catch (Exception ex)
             {
@@ -112,7 +102,7 @@ namespace DesafioBackEnd.Controllers
 
                 _dbContext.DataUser.Remove(User);
                 _dbContext.SaveChanges();
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok" });
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "Los datos fueron eliminados" });
             }
             catch (Exception ex)
             {

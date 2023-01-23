@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DesafioEncodeBDDO.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
@@ -37,18 +37,18 @@ namespace DesafioEncodeBDDO.Controllers
             if (usr == null)
             {
                 return BadRequest("Credenciales invalidas...");
-
             }
+
             // generar token
             string JwToken = GenerateToken(usr);
-            return Ok(new { token = JwToken });
+            return Ok(new {IdUser = usr.IdUser, Rol = usr.Rol, Token = JwToken });
         }
         private string GenerateToken(User user)
         {
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.NameUser),
-                new Claim("AdminType", user.Rol)
+                new Claim("Rol", user.Rol.Trim())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_iconfig.GetSection("Jwt:Key").Value));
